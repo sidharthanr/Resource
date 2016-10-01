@@ -1,0 +1,25 @@
+---
+title: "RMisc"
+author: "Raghu Sidharthan"
+date: "Monday, September 14, 2016"
+output: html_document
+---
+
+3.	Using the apply function – Can be used in choice model simulaions
+
+> h(temp3)
+        X1    X2    X3   X4
+[1,] FALSE  TRUE  TRUE TRUE
+[2,] FALSE FALSE FALSE TRUE
+[3,] FALSE  TRUE  TRUE TRUE
+[4,] FALSE  TRUE  TRUE TRUE
+[5,] FALSE FALSE  TRUE TRUE
+[6,]  TRUE  TRUE  TRUE TRUE
+
+Here, basically find the first column in which the TRUE occurs for each row.
+
+
+
+apply(temp3,1,function(x) match(TRUE,x))
+
+  [1] 2 4 2 2 3 1 2 2 2 1………………

@@ -1,0 +1,71 @@
+---
+title: "RDTable"
+author: "Raghu Sidharthan"
+date: "December 26, 2015"
+output: html_document
+---
+
+
+This is a compilation of data.table behavior.
+
+**1. Basic syntax**
+
+```{r,results='hold',results='hide'}
+library(data.table)
+DT = data.table(x=c("b","b","b","a","a"),v=rnorm(5)) # same as data.frame
+tables() # prints all data tables
+identical( DT[list("x","v"),],DT[.("x","v"),]) # aslias for list
+
+```
+
+**2. Basic syntax (contd.)**
+
+```{r}
+DT[2,] # select row 2
+DT[x=="b",] # select rows where column x == "b"
+cat(try(DT["b",],silent=TRUE)) # to show that it doesn't work unless keyed
+setkey(DT,x)
+(try(DT["b",],silent=TRUE)) # to show that it doesn't work unless keyed, also gets sorted
+DT["b",mult="first"] # The mult argument allows first/last row of group
+DT["b",mult="last"]
+DT["b"] # comma is optional
+```
+
+
+```{r, echo=T}
+#demonstrate the difference between a vector scan and a binary search - from datatable-intro.pdf
+grpsize = ceiling(1e7/26^2) # 10 million rows, 676 groups
+ tt=system.time( DF <- data.frame(
+ x=rep(LETTERS,each=26*grpsize),
+ y=rep(letters,each=grpsize),
+ v=runif(grpsize*26^2),
+ stringsAsFactors=FALSE)
+ )
+DT = as.data.table(DF)
+tt=system.time(ans1 <- DF[DF$x=="R" & DF$y=="h",]) # vector scan
+system.time(setkey(DT,x,y)) # one-off cost, usually
+ss=system.time(ans2 <- DT[list("R","h")]) # binary search
+uu=system.time(ans3 <- DT[x=="R" & y=="h",]) # vector scan using DT
+tt;ss;uu;
+```
+
+```{r, echo=T,eval=F}
+#Method for replacing na with something – Matt Dowle
+tripData <- fread('tripData.csv',nrows = 10,colClasses = c(rep("integer", 5), rep("NULL", 35)))
+
+f_dowle3 = function(DT) {
+
+# either of the following for loops
+
+    for (i in names(DT))
+        DT[is.na(get(i)),i:=0,with=FALSE]
+
+    
+    # by name :
+    for (j in names(DT))
+        set(DT,which(is.na(DT[[j]])),j,0)
+
+    # or by number (slightly faster than by name) :
+    for (j in seq_len(ncol(DT)))
+        set(DT,which(is.na(DT[[j]])),j,0)
+```

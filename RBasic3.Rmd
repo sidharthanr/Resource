@@ -1,0 +1,105 @@
+---
+title: "RBasic3"
+author: "Raghu Sidharthan"
+date: "Sunday, December 20, 2015"
+output: html_document
+---
+
+This is a compilation of basic R utilities. Commonly used items.
+
+```{r,results='hold'}
+#Categorizing each element of a vector into bins based on cutoff points
+tstData <- c(4,3,6.9,7,7.1,9)
+brks <- c(4,7,8)
+(tstData)
+(findInterval(tstData, brks))
+(findInterval(tstData, brks,all.inside = T))
+```
+
+```{r,results='hold',eval=F}
+#Replacing the suffix of a column name with another suffix in a data frame
+colnames(dset) <- gsub("_insfx","_outsfx",colnames(dset))
+#Here all the columns names ending in _insfx will be replaced with _outsfx
+
+
+#Selecting variables in a dataset that start with a certain prefix
+varlist <- c(grep("sampn",colnames(hhga)),grep("numnschd",colnames(hhga)))
+hhgaSml <- subset(hhga,select=varlistNeeded)
+
+#Search for  a pattern in a string and get the position number
+check <- as.integer(regexpr ("_",fnlPrfl$variable)) 
+#search for the position where the first underscore occurs in the variable fnlPrfl$variable
+#Substringing a string to get part of thee string (contd. fro above)
+fnlPrfl$trippurpD <- substr(fnlPrfl$variable,1,check-2)
+fnlPrfl$mseg      <- substr(fnlPrfl$variable,check-1,check-1)
+fnlPrfl$todCat    <- substr(fnlPrfl$variable,check+1,check+2)
+
+#Split a string every time a character is encountered
+strsplit(ttFmt,split=":")
+# This is useful to get hh,mm,ss from a time string in the time format
+
+#Convert Factor variable to character
+charVar <- as.character(facVar)
+
+# Date reading conversion
+# convert date info in format 'mm/dd/yyyy'
+strDates <- c("01/05/1965", "08/16/1975")
+dates <- as.Date(strDates, "%m/%d/%Y")
+The default format is yyyy-mm-dd
+mydates <- as.Date(c("2007-06-22", "2004-02-13"))
+
+#Day of the Week - DOW 
+# The wday component of a POSIXlt object is the numeric weekday (0-6 starting on Sunday).
+df = data.frame(date=c("2012-02-01", "2012-02-01", "2012-02-02")) 
+df$day <- weekdays(as.Date(df$date))
+as.POSIXlt(df$date)$wday
+
+# Cumalative sum, products and extremes
+cumsum(x)
+cumprod(x)
+cummax(x)
+cummin(x)
+
+#Linear Regression
+fit1 <- lm(DIST ~ TRPDUR_C, data=LTRIPCmplt[LTRIPCmplt$modeCat==1,]);fit1
+coefficients(fit1)/sqrt(diag(vcov(fit1)))
+
+# Global vs local variable. If you use <- inside a function then it assigns to local. IF you use <<- then it assigns to global variable
+
+
+#Get index of a particular set of columns and add some number to it – 
+sdta <- trt[,list(HHWORK0,HHWORK1,HHWORK2,HHWORK3PLUS)]
+out = unlist(apply(sdta,1,which.max))
+sdta.mat = as.matrix(data.frame(sdta))
+tplt <- matrix(c(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1),nrow=4)
+tplt <- tplt[out,]*trt$delta
+
+
+```
+
+```{r,results='hold',eval=F}
+59.	Length of a string – nchar
+60.	library(stringr)
+a.	str_sub("leftright",1,4)
+b.	[1] "left"
+c.	str_sub("leftright",-5,-1) # means start from 5th last character and go to the 1st last character
+d.	[1] "right"
+61.	Selecting all variables starting with pattern
+a.	ageVars <- names(forMeta)[regexec("AGE",names(forMeta))!=-1]
+62.	Applying max, min function to each element in a vector
+a.	sapply(inpShp$POPULATION,max,2)
+b.	Will return a vector of same length as the input vector capped below at 2.
+63.	Write to a a text file
+a.	write("\nNumber of Records Stats",file="StatSummary.csv",append=TRUE)
+64.	# returns string w/o leading whitespace
+65.	trim.leading <- function (x)  sub("^\\s+", "", x)
+66.	# returns string w/o trailing whitespace
+67.	trim.trailing <- function (x) sub("\\s+$", "", x)
+68.	
+69.	# returns string w/o leading or trailing whitespace
+70.	trim <- function (x) gsub("^\\s+|\\s+$", "", x)
+71.	From http://stackoverflow.com/questions/2261079/how-to-trim-leading-and-trailing-whitespace-in-r
+
+# below getting number of participants in a joint activity from the character string
+72. jtr$num_participants <- 1+nchar(jtr$tour_participants) - unlist(lapply(gsub(" ", "", jtr$tour_participants, fixed = TRUE),nchar))
+```

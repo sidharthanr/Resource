@@ -1,0 +1,66 @@
+---
+title: "RBasic2"
+author: "Raghu Sidharthan"
+date: "Monday, August 31, 2015"
+output: html_document
+---
+
+This is a compilation of basic R utilities with outputs also for clarity.
+
+```{r}
+a <- c(2,3);b <- c(4,1)
+df <- data.frame(a = c(2,3),b = c(4,1))
+MyFn1 <- function(x,y){ return (cbind(x*y,x+y,x-y))}
+MyFn1(df$a,df$b)
+MyFn2 <- function(x,y){ return (c(x*y,x+y,x-y))}
+MyFn2(df$a,df$b)
+mapply(MyFn2,df$a,df$b)
+
+#An example showind how to use sapply and match
+match(c(1,2,1,1,3),c(2,1))
+check1 <- data.frame(matrix(runif(15),nrow = 5))
+check2 <- sapply(check1,function(x) x<0.3)
+check2
+apply(check2,1,function(x) match(TRUE,x))
+
+#lapply examples
+lapply(1:3,function(n) n^2)                     
+#lapply(1:nObs,function(n) gammaAll[n,][sortOrder[n,]])
+#lapply(TAZSummary,function(n) table(is.na(n))) #get the distribution of na for each variable
+```
+
+```{r,results='hold',echo=T,eval=T}
+# rep function examples
+rep(1:4, 2)
+rep(1:4, each = 2)       # not the same.
+rep(1:4, c(2,2,2,2))     # same as second.
+rep(1:4, c(2,1,2,1))
+rep(1:4, each = 2, len = 4)    # first 4 only.
+rep(1:4, each = 2, len = 10)   # 8 integers plus two recycled 1's.
+rep(1:4, each = 2, times = 3)  # length 24, 3 complete replications
+
+```
+```{r,results='hold',echo=T,eval=T}
+# missing variables
+is.na(NA)
+is.na(Inf)
+```
+```{r,results='hold',echo=T,eval=T}
+is.finite(NA)
+is.finite(Inf)
+```
+```{r,results='hold',echo=T,eval=T,warning=F}
+is.nan(NA)
+is.nan(Inf)
+is.nan(0/0)
+is.nan(sqrt(-1))
+```
+
+***Date time formats
+
+```{r,results='hold',echo=T,eval=T}
+
+strptime("20/2/2006 11:16:16.683", "%d/%m/%Y %H:%M:%OS")
+strptime("20/2/06 11:16:16.683", "%d/%m/%y %H:%M:%OS")
+strptime("1/22/2013 11:00:00 pm",format="%m/%d/%Y %I:%M:%S %p")
+```

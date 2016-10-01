@@ -1,0 +1,129 @@
+---
+title: "ResourceBasic"
+author: "Raghu Sidharthan"
+date: "Saturday, Dec 26, 2015"
+output:
+  html_document:
+    number_sections: yes
+---
+
+**This is a compilation of basic R utilities.**
+
+sidharthanr.github.io/Resource/RBasic2
+sidharthanr.github.io/Resource/RBasic3
+sidharthanr.github.io/Resource/RDTable
+
+```{r,results='hide',echo=FALSE}
+```
+
+**1. System functions**
+
+```{r,results='hide',echo=TRUE,eval=FALSE}
+#RStudio Clear Screen = Ctrl+L
+sessionInfo()           #gives info about versions of loaded packages
+rm(list=ls(all=TRUE))   # Remove/delete
+rm(list=ls(pattern = "acc"))
+gc()                    # garbage collection
+getwd()                 # Getting directory
+basename(getwd())       # Get directory name
+dirname(getwd())        # Getting directory of parent
+#Setting directory
+PrjDr <- "C:\\Temp"
+curDir <- paste0(PrjDr,"\\Tasks\\First\\Second");setwd(curDir)
+file.edit('~/.Rprofile')
+options(rpubs.upload.method = "internal")
+#Function example
+Mysummary <- function(x,y,x){ return (x+y+z)
+}
+# objects in memory
+sort( sapply(ls(),function(x){object.size(get(x))})) 
+#Run time
+system.time(Mysummary(2,5,3))
+sapply(df,class) # get column type for each column
+.libPaths('C:\\Users\\sidharthanr\\Documents\\R\\win-library\\3.2') # to add user libs
+Sys.time() # to print current date/time
+suppressMessages(library(bit64)) # to suppress messages while loading a library
+#Use library() to see all packages installed, search() to see all packages loaded 
+str(df) # Compactly Display the Structure
+```
+**2. Reading and Writing files**
+```{r,results='hide',warning=FALSE,message=FALSE,echo=TRUE,eval=F}
+#Reading and writing a DBF file
+library(foreign);ind <- read.dbf("Ind_CNS2011.dbf", as.is = FALSE)
+write.dbf(ind,"ind_out.dbf")
+#Reading and writing a SPSS file
+library(foreign);test1 <- read.spss("spss.sav")
+library(memisc);test2 <- as.data.set(spss.system.file("spss.sav"))
+```
+```{r,results='hide',warning=FALSE,message=FALSE,error=FALSE}
+incsv <- read.csv("test.csv",header = TRUE)
+incsv <- read.csv("test.csv",header = TRUE,colClasses=c(rep("numeric",1),rep("character",2)))
+incsv <- read.table("test.csv",sep=',',header=TRUE)
+write.csv(incsv, file = "out.csv",row.names=FALSE)
+write.table(incsv,file="out.csv",append=F,quote=T,sep = '\t',na = "NA",row.names=F,col.names=T)
+
+## returns a vector equal to the number of lines in the file
+count.fields("out.csv", sep = "\t")
+## returns the maximum to set colClasses
+max(count.fields("out.csv", sep = "\t"))
+
+```
+**3. Common operations**
+```{r,results='hide',echo=TRUE,eval=F}
+
+colMeans(aq,na.rm = T)  # removes na records by variable(not by row) - see also colSums
+sapply(PSN,class)       # get column data type
+selNum <- sapply(PERTYPE_march,is.numeric) # select numeric cols
+mgd <- merge(ds1,  df2[,c("v1","v2")], by = c("v1","v2") ) # Merge
+x %% y                  #modulus (x mod y) 5%%2 is 1
+x %/% y                 #integer division 5%/%2 is 2
+identical( AB1, AB2 )   #Check whether identical
+aq <- aq[order(aq$v1, aq$v2),]  #Sort DF
+df$sl <- formatC(df$sl,width=2,format="d",flag = "0") # 1.	Formatting and padding number with leading zeros
+aq2 <- subset(aq, select = -c(Ozone,Solar.R) ) # Dropping specific columns 
+aq2 <- aq[aq$Month==5,] # dropping observation
+aq2 <- subset(aq,Month==5) # dropping observation
+paste("str",num,sep="") # concat string and numeric - see also paste0 (default sep="")
+paste("create table t",i,sep="")
+paste0("no", "gap")– pastes with default sep=””
+
+assign(paste0("ds",10),read.csv(paste("dset",10,".csv",sep=""))) #dynamic LHS dset name
+get("sht57") # opposite of assign/returns the object with that name
+strsplit(x, "e") # String split at delimiter- to get vector
+aq2 <- aggregate(list(mnOzone=aq$Ozone),aq['Month'],mean,na.rm = T) # aggregate in data frame
+temp <- avgDistTbl[avgDistTbl$trippurpD %in% c('WBO','OBO','HBU','HBSC'),] # Using the 'in' to check in a list
+# "%in%" <- function(x, table) match(x, table, nomatch = 0) > 0
+quantile(tstData,probs = (1:5)/5) # gives 5 quantiles
+LTripStr$trippurp[is.na(LTripStr$nStrStps)]=2 #Check variables NA - missing value
+df[duplicated(df), ] # select duplicated records
+feature$ATTR <- factor(feature$ATTR). #R doesn't automatically drop unused factor levels, have to re-factor: 
+
+# creating ordered factors - below within data.table
+tripData[,tripCat:=factor(tripCat,levels=c('HBW','HBO','NHB'),ordered=TRUE)]
+
+
+# create cross tabs
+mytable <- xtabs(~PERTYPE+HHVEH+distBand, data=trpGPSNS3)
+xtabs(EST~origCnty+destCnty,wrkFlow) - to sum up the EST variable, workflow dset name
+
+#Random number related
+set.seed(123) - sets seed
+runif(nAlt*nvar*nObs, min=0, max=1) # random uniform distribution
+
+# Creating formulae dynamically from passsed strings or using paste
+f1 <- as.name(names(allTemps)[1])
+allTempsSMRY <- dcast.data.table(allTempsMelt,eval(bquote(.(f1)~variable+scenName)),value.var = 'value',fill=-1)
+
+
+```
+
+**4. dplyr functions**
+```{r,results='hide',echo=TRUE,eval=F}
+ddply(temp,.(trippurpD,todCat),summarise, wm = weighted.mean(avgDist,nObs)) # Weighted mean using the plyr package function
+```
+
+
+******
+
+
+
