@@ -1,7 +1,6 @@
 ---
 title: "RDTable"
 author: "Raghu Sidharthan"
-date: "December 26, 2015"
 output: html_document
 ---
 

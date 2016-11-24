@@ -1,7 +1,6 @@
 ---
 title: "RBasic3"
 author: "Raghu Sidharthan"
-date: "Sunday, December 20, 2015"
 output: html_document
 ---
 

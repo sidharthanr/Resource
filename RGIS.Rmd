@@ -1,0 +1,162 @@
+---
+title: "R GIS Resource"
+author: "Raghu Sidharthan"
+output:
+  html_document:
+    number_sections: yes
+---
+
+
+**This is a compilation of basic R utilities.**
+
+
+[RBasic1](sidharthanr.github.io/Resource/RBasic1), 
+[RBasic2](sidharthanr.github.io/Resource/RBasic2),
+[RBasic3](sidharthanr.github.io/Resource/RBasic3),
+[Leaflet](sidharthanr.github.io/Resource/Leaflet)
+
+**1. Reading and Writing Shapefiles**
+
+```{r,results='hide',echo=TRUE,eval=FALSE}
+# Using rgdal package
+taz <- readOGR("C:\\Temp\\", "tazInput") 
+writeOGR(taz, dsn = "C:/Project/", layer = "taz_mod", driver = "ESRI Shapefile")
+
+# maptools package
+
+# For polygon
+taz <- readShapePoly("C:/Temp/tazInput.shp",IDvar="ID",proj4string=CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")) 
+
+# For Line file - e.g. NEtwork
+linkNet <- readShapeLines(paste0(PrjDr,'\\network.shp'))
+
+# For Spatial Points
+
+
+#To get the projection used in a shapefile use this
+taz@proj4string # Prints the projection string
+#To set projection (if there is no projection)
+taz@proj4string <-  CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+#This should be consistent with the coordinates used in the shapefile (even if projection information is not stored)
+#Transform the proj4string
+taz <- spTransform(taz,CRS("+proj=utm +zone=17 +north"))
+
+#Creating a SpatialPointsDataFrame from bare coordinates
+parLong <- -117.2274;	parLatt <-   33.91980
+pts <- cbind(x=parLong,y=parLatt)
+pointobj <- SpatialPoints(pts,proj4string=CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+pointobj <- SpatialPointsDataFrame(pts, sites, coords.nrs = numeric(0),
+proj4string = CRS("+proj=lcc +lat_1=30.12 +lat_2=31.88 +lat_0=29.67 +lon_0=-100.33 +x_0=700000 +y_0=3000000 +ellps=GRS80 +datum=NAD83 +units=us-ft +no_defs +towgs84=0,0,0]"), match.ID = TRUE)
+
+#Centroid of polygons
+trueCentroids = gCentroid(sids,byid=TRUE)
+
+
+#Printing the shapefile to a PNG file with a given resolution
+png("jointPlot.png",width=8.0,height=6.0,units="in",res=1200) # use pdf() for PDF files
+plot(SCAGTAZt2_trans);#plot(HSR_TAZs,add=T)
+dev.off()
+
+```
+
+** Frequently used functions**
+
+```{r,results='hide',echo=TRUE,eval=FALSE}
+
+#This function sets the projection for a SPDF without Projection and transforms to Web Projection
+sfctaCRS <- ("+init=epsg:2227")
+setProjWeb <- function(inSh,origPrj){
+  inSh@proj4string <- CRS(origPrj)
+  inSh  <- spTransform(inSh, CRS("+init=epsg:4269"))
+}
+linkNet3 <- setProjWeb(linkNet2,sfctaCRS)
+
+
+# Crops a shapefile between the specified x and y projection coordinates
+cropByCen <- function(inSh,x1,x2,y1,y2){
+  cenDT = data.table(gCentroid(inSh, byid = TRUE)@coords)
+  retSH <- inSh[cenDT$y>y1 & cenDT$y<y2 & cenDT$x>x1 & cenDT$x<x2,]
+  return(retSH)
+}
+netCase1_crop <- cropByCen(netCase1,860000,890000,580000,600000)
+
+```
+
+**2. Miscellaneous Items**
+
+```{r,results='hide',echo=TRUE,eval=FALSE}
+
+#Intersection of a SpatialPoints and SpatialPolygonsDataFrame – implemented in sp
+check <- over(pointobj,SCAGTAZt2)
+returns a data.frame of the second argument with row entries corresponding to the first argument
+
+
+#Intersection of polygon and polygon – implemented in library(rgeos)
+check1 <- over(SCAGTAZt2_tr,HSR_TAZs)
+check3 <- over(SCAGTAZt2_tr,HSR_TAZs,returnList = TRUE)
+
+#Dissolve all boundaries  - use gUnaryUnion function
+plot((tracts10))
+plot(gUnaryUnion(tracts10))
+#The result is a SpatialPolygon. To create a SpatiaPolygonDataFrame do the following
+serpmCounty <- unionSpatialPolygons(tl_2012_12_tract, tl_2012_12_tract$COUNTYFP) dummyData = data.table(row.names(serpmCounty))
+row.names(dummyData) <- row.names(serpmCounty)
+serpmCounty = SpatialPolygonsDataFrame(serpmCounty,dummyData)
+
+#Function to get the TAZ location of a dataframe of points
+taz <- readOGR("C:\\Project\\", "taz")
+getTAZ <- function(parLong,parLatt){
+pts <- cbind(parLong,parLatt)
+pointobj <- SpatialPoints(pts,proj4string=CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"))
+getTAZ <- over(pointobj,taz)$ID
+}
+
+#Use of spbind to merge a dataframe to a spatial object
+
+xx <- readShapePoly(system.file("shapes/sids.shp", package="maptools")[1], 
+  IDvar="FIPSNO", proj4string=CRS("+proj=longlat +ellps=clrk66"))
+xtra <- read.dbf(system.file("share/nc_xtra.dbf", package="maptools")[1])
+o <- match(xx$CNTY_ID, xtra$CNTY_ID)
+xtra1 <- xtra[o,]
+row.names(xtra1) <- xx$FIPSNO
+xx1 <- spCbind(xx, xtra1)
+names(xx1)
+identical(xx1$CNTY_ID, xx1$CNTY_ID.1)
+
+#Dissolving the boundaries – using maptools
+if (!rgeosStatus()) gpclibPermit()
+nc1 <- readShapePoly(system.file("shapes/sids.shp", package="maptools")[1],
+ proj4string=CRS("+proj=longlat +datum=NAD27"))
+lps <- coordinates(nc1)
+ID <- cut(lps[,1], quantile(lps[,1]), include.lowest=TRUE)
+reg4 <- unionSpatialPolygons(nc1, ID)
+row.names(reg4)
+
+
+
+#For calculating the area of polygons
+
+# Transforming the projection to a planar system for calculating the polygon area
+spData <-spTransform(inpshp,CRS("+proj=lcc +lat_1=34.03333333333333 +lat_2=35.46666666666667 +lat_0=33.5 +lon_0=-118 +x_0=2000000
++y_0=500000.0000000001 +datum=NAD83 +units=us-ft +no_defs +ellps=GRS80 +towgs84=0,0,0"))
+temp1 <- sapply(slot(spData, "polygons"), function(x) sapply(slot(x, "Polygons"), slot, "area"))
+
+# Getting the latitude/longitude extend of a shapefile 
+extent(nhood) # library(raster)
+
+# Get the polygon ID from the SpatialPolygonDataFrame
+sapply(slot(Zoning, "polygons"), function(x) slot(x, "ID"))
+sapply(Zoning@polygons, function(x) slot(x, "ID"))
+
+# adds the plot to the existing plot
+plot(tazDist,add=TRUE)
+
+# gIntersection and gSimplify
+# gSimplify – to smooth the polygon edges so that gIntersection becomes faster
+# When applied to lines it is possible for the resulting geometry to lose simplicity (gIsSimple). If topologyPreserve is not specified it is also possible that the resulting geometries may no longer be valid (gIsValid). Remember to check the resulting geometry as many other functions rely on simplicity and or validity when performing their calculations.
+# Use length(taz@polygons) to see how many polygons ware there in the output. If there is a reduction in the number of polygons then make the tolerance value smaller (0.01 to 0.001)
+# TODO: Add a procedure to identify the smallest polygon and plot it before and after – to understand the magnitude of changes
+
+
+
+```

@@ -1,7 +1,6 @@
 ---
 title: "ResourceBasic"
 author: "Raghu Sidharthan"
-date: "Saturday, Dec 26, 2015"
 output:
   html_document:
     number_sections: yes
@@ -9,9 +8,10 @@ output:
 
 **This is a compilation of basic R utilities.**
 
-sidharthanr.github.io/Resource/RBasic2
-sidharthanr.github.io/Resource/RBasic3
-sidharthanr.github.io/Resource/RDTable
+[RBasic2](sidharthanr.github.io/Resource/RBasic2),
+[RBasic3](sidharthanr.github.io/Resource/RBasic3),
+[RGIS](sidharthanr.github.io/Resource/RGIS),
+[Leaflet](sidharthanr.github.io/Resource/Leaflet)
 
 ```{r,results='hide',echo=FALSE}
 ```
