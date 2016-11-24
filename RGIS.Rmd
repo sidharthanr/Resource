@@ -10,10 +10,10 @@ output:
 **This is a compilation of basic R utilities.**
 
 
-[RBasic1](sidharthanr.github.io/Resource/RBasic1), 
-[RBasic2](sidharthanr.github.io/Resource/RBasic2),
-[RBasic3](sidharthanr.github.io/Resource/RBasic3),
-[Leaflet](sidharthanr.github.io/Resource/Leaflet)
+[RBasic1](RBasic1), 
+[RBasic2](RBasic2),
+[RBasic3](RBasic3),
+[Leaflet](Leaflet)
 
 **1. Reading and Writing Shapefiles**
 
@@ -59,7 +59,7 @@ dev.off()
 
 ```
 
-** Frequently used functions**
+**2. Frequently used functions**
 
 ```{r,results='hide',echo=TRUE,eval=FALSE}
 
@@ -82,7 +82,7 @@ netCase1_crop <- cropByCen(netCase1,860000,890000,580000,600000)
 
 ```
 
-**2. Miscellaneous Items**
+**3. Miscellaneous Items**
 
 ```{r,results='hide',echo=TRUE,eval=FALSE}
 

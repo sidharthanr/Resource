@@ -8,10 +8,10 @@ output:
 
 **This is a compilation of basic R utilities.**
 
-[RBasic2](sidharthanr.github.io/Resource/RBasic2),
-[RBasic3](sidharthanr.github.io/Resource/RBasic3),
-[RGIS](sidharthanr.github.io/Resource/RGIS),
-[Leaflet](sidharthanr.github.io/Resource/Leaflet)
+[RBasic2](RBasic2),
+[RBasic3](RBasic3),
+[RGIS](RGIS),
+[Leaflet](Leaflet)
 
 ```{r,results='hide',echo=FALSE}
 ```

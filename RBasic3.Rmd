@@ -6,6 +6,11 @@ output: html_document
 
 This is a compilation of basic R utilities. Commonly used items.
 
+[RBasic1](RBasic1),
+[RBasic3](RBasic2),
+[RGIS](RGIS),
+[Leaflet](Leaflet)
+
 ```{r,results='hold'}
 #Categorizing each element of a vector into bins based on cutoff points
 tstData <- c(4,3,6.9,7,7.1,9)

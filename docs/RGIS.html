@@ -107,7 +107,7 @@ trueCentroids = gCentroid(sids,byid=TRUE)
 png(&quot;jointPlot.png&quot;,width=8.0,height=6.0,units=&quot;in&quot;,res=1200) # use pdf() for PDF files
 plot(SCAGTAZt2_trans);#plot(HSR_TAZs,add=T)
 dev.off()</code></pre>
-<p>** Frequently used functions**</p>
+<p><strong>2. Frequently used functions</strong></p>
 <pre class="r"><code>#This function sets the projection for a SPDF without Projection and transforms to Web Projection
 sfctaCRS &lt;- (&quot;+init=epsg:2227&quot;)
 setProjWeb &lt;- function(inSh,origPrj){
@@ -124,7 +124,7 @@ cropByCen &lt;- function(inSh,x1,x2,y1,y2){
   return(retSH)
 }
 netCase1_crop &lt;- cropByCen(netCase1,860000,890000,580000,600000)</code></pre>
-<p><strong>2. Miscellaneous Items</strong></p>
+<p><strong>3. Miscellaneous Items</strong></p>
 <pre class="r"><code>#Intersection of a SpatialPoints and SpatialPolygonsDataFrame  implemented in sp
 check &lt;- over(pointobj,SCAGTAZt2)
 returns a data.frame of the second argument with row entries corresponding to the first argument

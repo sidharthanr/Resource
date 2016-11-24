@@ -6,6 +6,11 @@ output: html_document
 
 This is a compilation of basic R utilities with outputs also for clarity.
 
+[RBasic1](RBasic1),
+[RBasic3](RBasic3),
+[RGIS](RGIS),
+[Leaflet](Leaflet)
+
 ```{r}
 a <- c(2,3);b <- c(4,1)
 df <- data.frame(a = c(2,3),b = c(4,1))
