@@ -12,14 +12,17 @@ A starter template for leaflet tasks.
 library(rgdal)
 library(leaflet)
 library(htmltools)
+library(data.table)
 ```
 
 ```{r,results='hide',echo=FALSE,eval=TRUE}
 
 #C:\Users\sidharthanr\Dropbox\Resource\Git\Resource
 #C:\Users\sidharthanr\Dropbox\Resource\R\GIS\Shape\India
-indShp <- readOGR("C:\\Users\\sidharthanr\\Dropbox\\Resource\\R\\GIS\\Shape\\India", "IND_adm1") 
-indShp@data$txtLbl <- paste0(indShp@data$NAME_1,'-',indShp@data$TYPE_1)
+indShp <- readOGR("C:\\Users\\sidharthanr\\Dropbox\\Resource\\R\\GIS\\Shape\\India", "IND_adm2") 
+shpDT <- indShp[indShp@data$NAME_1=='Kerala',]
+shpDT@data <- data.table(shpDT@data)
+shpDT@data[,txtLbl := paste(NAME_2,'-',VARNAME_2)]
 ```
 
 **Here's a basic example**
@@ -29,12 +32,12 @@ m <- leaflet() %>%
   addProviderTiles('Esri.WorldStreetMap',group='EsriStreet') %>%
   addProviderTiles('Esri.WorldImagery',group='EsriImagery') %>%
   addProviderTiles('CartoDB.Positron',group='CartoDB-1') %>%  
-  addPolygons(data=indShp,group='India',stroke=T,weight = 2,fillOpacity = 0.1,
-               label=lapply(indShp@data$txtLbl, function(x) HTML(x)),
+  addPolygons(data=shpDT,group='Kerala',stroke=T,weight = 2,fillOpacity = 0,
+               label=lapply(shpDT@data$txtLbl, function(x) HTML(x)),
                labelOptions = labelOptions(noHide = T)) %>% 
   addLayersControl(
     baseGroups = c('CartoDB-1','EsriStreet','EsriImagery'),
-    overlayGroups = c('India'),
+    overlayGroups = c('Kerala'),
     options = layersControlOptions(collapsed = T)
   )
 m  # Print the map
