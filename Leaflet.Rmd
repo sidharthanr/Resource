@@ -1,0 +1,49 @@
+---
+pagetitle: Leaflet for R - Introduction
+---
+
+## Introduction
+
+A starter template for leaflet tasks.
+
+**Libraries to load**
+
+```{r, message=F, warning=F}
+library(rgdal)
+library(leaflet)
+library(htmltools)
+```
+
+```{r,results='hide',echo=FALSE,eval=TRUE}
+
+#C:\Users\sidharthanr\Dropbox\Resource\Git\Resource
+#C:\Users\sidharthanr\Dropbox\Resource\R\GIS\Shape\India
+indShp <- readOGR("C:\\Users\\sidharthanr\\Dropbox\\Resource\\R\\GIS\\Shape\\India", "IND_adm1") 
+indShp@data$txtLbl <- paste0(indShp@data$NAME_1,'-',indShp@data$TYPE_1)
+```
+
+**Here's a basic example**
+```{r}
+m <- leaflet() %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addProviderTiles('Esri.WorldStreetMap',group='EsriStreet') %>%
+  addProviderTiles('Esri.WorldImagery',group='EsriImagery') %>%
+  addProviderTiles('CartoDB.Positron',group='CartoDB-1') %>%  
+  addPolygons(data=indShp,group='India',stroke=T,weight = 2,fillOpacity = 0.1,
+               label=lapply(indShp@data$txtLbl, function(x) HTML(x)),
+               labelOptions = labelOptions(noHide = T)) %>% 
+  addLayersControl(
+    baseGroups = c('CartoDB-1','EsriStreet','EsriImagery'),
+    overlayGroups = c('India'),
+    options = layersControlOptions(collapsed = T)
+  )
+m  # Print the map
+```
+
+**Next Things**
+```{r}
+
+#addMarkers(lng=76.6, lat=10.8, popup="My Hometown") %>% 
+#setView(lng=76.6, lat=10.8,zoom = 10)
+
+```
