@@ -20,7 +20,10 @@ output:
 ```{r,results='hide',echo=TRUE,eval=FALSE}
 # Using rgdal package
 taz <- readOGR("C:\\Temp\\", "tazInput") 
-writeOGR(taz, dsn = "C:/Project/", layer = "taz_mod", driver = "ESRI Shapefile")
+taz <- readOGR('.\\inp.geojson',layer='OGRGeoJSON')
+
+writeOGR(taz,'.', layer = "taz_mod", driver = "ESRI Shapefile")
+
 
 # maptools package
 

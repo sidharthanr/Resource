@@ -1,10 +1,19 @@
 ---
-pagetitle: Leaflet for R - Introduction
+title: "R GIS Resource"
+author: "Raghu Sidharthan"
+output:
+  html_document:
+    number_sections: yes
 ---
+
+[RBasic1](RBasic1), 
+[RBasic2](RBasic2),
+[RBasic3](RBasic3),
+[RGIS](RGIS)
 
 ## Introduction
 
-A starter template for leaflet tasks.
+A template for leaflet tasks in R.
 
 **Libraries to load**
 
@@ -13,40 +22,84 @@ library(rgdal)
 library(leaflet)
 library(htmltools)
 library(data.table)
+library(rgeos)
+library(jsonlite)
 ```
 
-```{r,results='hide',echo=FALSE,eval=TRUE}
-
-#C:\Users\sidharthanr\Dropbox\Resource\Git\Resource
-#C:\Users\sidharthanr\Dropbox\Resource\R\GIS\Shape\India
-indShp <- readOGR("C:\\Users\\sidharthanr\\Dropbox\\Resource\\R\\GIS\\Shape\\India", "IND_adm2") 
+```{r,results='hide',echo=TRUE,eval=TRUE}
+indShp <- readOGR("..\\..\\R\\GIS\\Shape\\India", "IND_adm2") 
 shpDT <- indShp[indShp@data$NAME_1=='Kerala',]
 shpDT@data <- data.table(shpDT@data)
+shpDT@data <- shpDT@data[,.(NAME_2,VARNAME_2)]
 shpDT@data[,txtLbl := paste(NAME_2,'-',VARNAME_2)]
+shpDT_sml <- gSimplify(shpDT,tol = 0.001)
+row.names(shpDT@data) <- row.names(shpDT)
+shpDT_sml <- SpatialPolygonsDataFrame(shpDT_sml,shpDT@data)
+shpDT_pkd <- shpDT_sml[shpDT_sml@data$NAME_2 %in% c('Palakkad','Malappuram','Thrissur','Ernakulam'),]
+sort( sapply(ls(),function(x){object.size(get(x))})) 
+
 ```
 
-**Here's a basic example**
+**1. Basic template**
 ```{r}
-m <- leaflet() %>%
-  addTiles() %>%  # Add default OpenStreetMap map tiles
+leaflet() %>%
+  addTiles() %>%
   addProviderTiles('Esri.WorldStreetMap',group='EsriStreet') %>%
   addProviderTiles('Esri.WorldImagery',group='EsriImagery') %>%
   addProviderTiles('CartoDB.Positron',group='CartoDB-1') %>%  
-  addPolygons(data=shpDT,group='Kerala',stroke=T,weight = 2,fillOpacity = 0,
+  addPolygons(data=shpDT_sml,group='Kerala',stroke=T,weight = 2,fillOpacity = 0,
                label=lapply(shpDT@data$txtLbl, function(x) HTML(x)),
                labelOptions = labelOptions(noHide = T)) %>% 
   addLayersControl(
     baseGroups = c('CartoDB-1','EsriStreet','EsriImagery'),
     overlayGroups = c('Kerala'),
-    options = layersControlOptions(collapsed = T)
-  )
-m  # Print the map
+    options = layersControlOptions(collapsed = T)  )
+
 ```
 
-**Next Things**
+**2. Example with GeoJSON, Markers**
 ```{r}
+# Reading the GeoJSON File using the jsonlite package
+GJFName <- '..\\..\\Data\\PKD_water_road.geojson'
+pkdGJ <- readLines(GJFName, warn = FALSE) %>% paste(collapse = "\n") %>% fromJSON(simplifyVector = FALSE)
+pkdGJDT <- data.table(fromJSON(GJFName)$features$properties)
+pkdGJDT$geomType <- unlist(lapply(pkdGJ$features, function(feat) feat$geometry$type))
 
-#addMarkers(lng=76.6, lat=10.8, popup="My Hometown") %>% 
-#setView(lng=76.6, lat=10.8,zoom = 10)
+# Function to style the features for display
+FeatureStyler <- function(feat) {
+    t_weight = 2;t_opacity = 1;t_fillOpacity = 0;t_color = '#006d2c';t_fillColor = '#41b6c4'
+    if (feat$geometry$type == 'Polygon') {
+        t_fillOpacity = 0.5; t_color = '#253494'; t_fillColor = '#41b6c4'
+    }
+    else if (feat$geometry$type == 'LineString') t_fillOpacity = 0
+    feat$properties$style <- list(weight = t_weight, opacity = t_opacity,fillOpacity = t_fillOpacity,
+                color = t_color, fillColor = t_fillColor,label='sdf', labelOptions = labelOptions(noHide = T))
+    feat
+}
+pkdGJ$features <- lapply(pkdGJ$features, FeatureStyler)
 
+# Selector vecors to subset GeoJson Types
+selectorTranspo <- (unlist(lapply(pkdGJ$features, function(feat) feat$properties$Highway)) != 'not_hway' |
+    unlist(lapply(pkdGJ$features, function(feat)!is.null(feat$properties$railway))))
+selectorWater <- !(selectorTranspo)
+
+subsetGeoJSON <- function(fullGeoJSON, selectorTemplate) {
+    temp <- list();    temp$type <- "FeatureCollection";    temp$features <- fullGeoJSON$features[selectorTemplate]
+}
+pkdGJ_water    <- subsetGeoJSON(pkdGJ,selectorWater)
+
+leaflet() %>%  addTiles() %>%  
+  addProviderTiles('Esri.WorldStreetMap',group='EsriStreet') %>%
+  addProviderTiles('CartoDB.Positron',group='CartoDB-1') %>%  
+  addPolygons(data=shpDT_pkd,group='Cenral Kerala',stroke=T,weight = 2,fillOpacity = 0,
+               label=lapply(shpDT_pkd@data$txtLbl, function(x) HTML(x)),
+               labelOptions = labelOptions(noHide = T)) %>% 
+  addGeoJSON(pkdGJ_water, group = 'Water') %>%
+  addMarkers(lng=76.639003, lat=10.800471, popup="Palakkad Jn.",group='Landmarks') %>% 
+  setView(lng=76.64, lat=10.8,zoom = 10) %>% 
+  addLayersControl(
+    baseGroups = c('CartoDB-1','EsriStreet'),
+    overlayGroups = c('Cenral Kerala','Water','Landmarks'),
+    options = layersControlOptions(collapsed = T) )
 ```
+
