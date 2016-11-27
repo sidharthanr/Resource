@@ -1,0 +1,35 @@
+---
+title: "R and Py Starter Template"
+author: "Raghu Sidharthan"
+output:  html_document
+---
+**R Starter Template**
+```{r,eval=FALSE}
+# Raghu Sidharthan - 2017/mm/dd
+library(data.table)
+library(bit64)
+
+options(width = 220)
+
+PrjDr <- "C:\\Projects\\Projects_1"
+
+curDir <- paste0(PrjDr,"\\Tasks\\Task_1\\Outputs")
+setwd(curDir)
+```
+**Python Starter Template**
+```{python,eval=FALSE}
+# Raghu Sidharthan - 2017/mm/dd
+from __future__ import print_function,division
+import numpy as np
+import pandas as pd
+import sys
+import os
+import time
+
+dataFldr = "C:\\Projects\\Projects_1"
+os.chdir(dataFldr+'\\Tasks\\Task_1\\Outputs')
+
+pd.set_option('precision',3)
+pd.set_option('display.width',500)
+pd.set_option('display.max_rows',20)
+```
