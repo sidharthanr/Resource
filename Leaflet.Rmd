@@ -1,19 +1,13 @@
 ---
-title: "R GIS Resource"
+title: "R Leaflet template"
 author: "Raghu Sidharthan"
-output:
-  html_document:
-    number_sections: yes
+output:  html_document
 ---
 
 [RBasic1](RBasic1), 
 [RBasic2](RBasic2),
 [RBasic3](RBasic3),
 [RGIS](RGIS)
-
-## Introduction
-
-A template for leaflet tasks in R.
 
 **Libraries to load**
 

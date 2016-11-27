@@ -66,12 +66,15 @@ img {
 </div>
 
 
-<p><strong>This is a compilation of basic R utilities.</strong></p>
+<p><strong>Common GIS Tasks using R Libraries</strong></p>
 <p><a href="RBasic1" class="uri">RBasic1</a>, <a href="RBasic2" class="uri">RBasic2</a>, <a href="RBasic3" class="uri">RBasic3</a>, <a href="Leaflet" class="uri">Leaflet</a></p>
 <p><strong>1. Reading and Writing Shapefiles</strong></p>
 <pre class="r"><code># Using rgdal package
 taz &lt;- readOGR(&quot;C:\\Temp\\&quot;, &quot;tazInput&quot;) 
-writeOGR(taz, dsn = &quot;C:/Project/&quot;, layer = &quot;taz_mod&quot;, driver = &quot;ESRI Shapefile&quot;)
+taz &lt;- readOGR('.\\inp.geojson',layer='OGRGeoJSON')
+
+writeOGR(taz,'.', layer = &quot;taz_mod&quot;, driver = &quot;ESRI Shapefile&quot;)
+
 
 # maptools package
 

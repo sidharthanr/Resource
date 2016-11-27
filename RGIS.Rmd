@@ -1,14 +1,11 @@
 ---
 title: "R GIS Resource"
 author: "Raghu Sidharthan"
-output:
-  html_document:
-    number_sections: yes
+output:  html_document
 ---
 
 
-**This is a compilation of basic R utilities.**
-
+**Common GIS Tasks using R Libraries**
 
 [RBasic1](RBasic1), 
 [RBasic2](RBasic2),

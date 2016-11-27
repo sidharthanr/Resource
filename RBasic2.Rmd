@@ -1,8 +1,9 @@
 ---
-title: "RBasic2"
+title: "R Basic 2"
 author: "Raghu Sidharthan"
 output: html_document
 ---
+**This page is work in progress**
 
 This is a compilation of basic R utilities with outputs also for clarity.
 

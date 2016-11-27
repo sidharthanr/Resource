@@ -1,13 +1,14 @@
 ---
-title: "RBasic3"
+title: "R Basic 3"
 author: "Raghu Sidharthan"
 output: html_document
 ---
+**This page is work in progress**
 
 This is a compilation of basic R utilities. Commonly used items.
 
 [RBasic1](RBasic1),
-[RBasic3](RBasic2),
+[RBasic2](RBasic2),
 [RGIS](RGIS),
 [Leaflet](Leaflet)
 
