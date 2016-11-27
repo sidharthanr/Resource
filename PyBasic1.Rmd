@@ -1,0 +1,43 @@
+---
+title: "Python Basic 1"
+author: "Raghu Sidharthan"
+output: 
+  html_document:
+    highlight: pygments
+---
+
+**Basic Python Commands**
+```{python,eval=FALSE}
+type(x) #to get the data type of a variable
+len(x)  #gives the length of the list/array 
+#Profile functions 
+import cProfile
+cProfile.run('cdfmvna(aa,rr,ss)',sort=1)
+
+# function definition
+def square(x):
+    return x**2
+    
+#Get and set working directory
+import os
+os.getcwd()
+os.chdir('C:\\Users\\sidharthanr\\Temp')
+os.listdir('C:\\Users\\sidharthanr\\Temp') # lists all files
+
+import sys
+sys.exit("Error message")  #To stop the program execution progrmatically
+
+#Get Time  for time consumed computations
+import time
+ts = time.time()
+
+```
+**Python commands with evaluation**
+```{python}   
+print(list(xrange(4)))
+
+#Padding Zeros in a string
+n = '4'
+print n.zfill(3)
+
+```
