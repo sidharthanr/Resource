@@ -26,18 +26,72 @@ os.listdir('C:\\Users\\sidharthanr\\Temp') # lists all files
 
 import sys
 sys.exit("Error message")  #To stop the program execution progrmatically
-
+sys.path.append('C:\\Temp') #after this modules in this directory can be imported
 #Get Time  for time consumed computations
 import time
 ts = time.time()
 
+hrs = raw_input("Enter Name:") # to enter data from command prompt
+
+del inpMatPD # Delete an object
+__val = gc.collect() #Force garbage collection as we are deleting large objects
+
+#Read last N lines from a file
+from collections import deque
+with open('data.csv', 'r') as f:
+    q = deque(f, 2)  # reads last two lines
+
 ```
 **Python commands with evaluation**
 ```{python}   
-print(list(xrange(4)))
+print(list(xrange(4))) #xrange used for iterators
+print('4'.zfill(3)) #Padding Zeros in a string
+print(5%2) # modulus operator 
 
-#Padding Zeros in a string
-n = '4'
-print n.zfill(3)
+#Multiple list counters - like a Cartesian product
+print([prefix+'_'+elt for elt in ['aa','bb', 'cc'] for prefix in ('p1','p2') ])
+
+```
+
+```{python}   
+#Equivalent of R match function (with zero indexing)
+match = lambda a, b: [ b.index(x) if x in b else None for x in a ]
+print(match([2,1],[1,3,1,3]))
+
+
+```
+```{python}   
+#Subset a list using another Boolean list
+from itertools import compress
+list_a = [1, 2, 4, 6]
+fil = [True, False, True, False]
+print(list(compress(list_a, fil)))
+
+```
+**String Operations**
+```{python}   
+s = "  \t a string example\t  "
+print(s.strip()) 
+print(s.rstrip()) #Whitespace on the right side:
+print(s.lstrip()) #Whitespace on the left side:
+print(s.strip(' \t\n\r')) #strip arbitrary characters to any of these functions like this:
+str = "this is string example....wow!!! this is really string";
+print(str.replace("is", "was"))
+
+
+```
+**Time and Date**
+```{python}   
+import time
+from datetime import datetime
+import pytz
+
+print(datetime.fromtimestamp(1284286794)) #Convert seconds from epoch to datetime object
+print(datetime.now()) # Current time
+print(datetime.now(pytz.timezone('UTC')).astimezone(pytz.timezone('US/Eastern')))
+```
+
+```{python}   
+
 
 ```
