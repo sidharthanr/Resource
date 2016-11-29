@@ -1,0 +1,86 @@
+---
+title: "Python Pandas"
+author: "Raghu Sidharthan"
+output: 
+  html_document:
+    highlight: pygments
+---
+
+**Basic Pandas syntax**
+```{python,eval=FALSE}   
+import pandas as pd
+pd.set_option('precision',3)
+pd.set_option('display.width',500)
+inpMatPD.info() # gives the memory usage of a object
+s = pd.Series([1,3,5,np.nan,6,8]) # Creating a Series
+Series.tolist() #Converting Series to list
+
+#Creating a DataFrame
+dates = pd.date_range('20130101',periods=6)
+df = pd.DataFrame(np.random.randn(6,4),index=dates,columns=list('ABCD'))
+
+(df.head(), df.tail(3), df.index, df.columns, df.describe) #Viewing Data
+
+df.columns = ['a', 'b'] # 2.	Assign column names
+
+df.rename(columns={'$a': 'a', '$b': 'b'}, inplace=True) #Rename columns 
+
+#Sorting by an axis 
+df.sort_index(axis=1, ascending=False)
+#Sorting by value
+df.sort(columns='B')
+df.sort(['A', 'B'], ascending=[1, 0])
+
+
+#Prefixing certain column names using multiple list iterators
+df.columns = df.columns.tolist()[:2]+[a+b for a in df.columns.tolist()[2:] for b in ['_sfx'] ]
+
+#Pandas append - appends rows and returns a new object  
+allRslt=allRslt.append(rslt1)
+
+df.drop_duplicates(['HOUSEID']) # Drop duplicates
+df[df.duplicated(['HOUSEID'])] # Identify duplicates
+
+
+
+```
+**Filtering a DataFrame**
+```{python,echo=-1:-5,comment=NA}   
+import numpy as np
+import pandas as pd
+np.random.seed(123)
+df = pd.DataFrame(np.random.randn(4,3),index=list('abcd'),columns=list('ABC'))
+df['textCol']=['dog','cat','mouse','cat']
+print(df)
+print(df.loc['a']>0)
+print(df.loc[:,df.loc['a']>0])
+print(df.loc[df['C']>1.25,:])
+print(df.loc[df['textCol'].isin(['cat','mouse']),:])
+print(df.loc[~(df['textCol'].isin(['cat','mouse'])),:])
+```
+
+```{python,echo=-1:-2,comment=NA}   
+import numpy as np
+import pandas as pd
+#	Create DataFrame from vectors of unequal length
+d = dict( A = np.array([1,2]), B = np.array([1,2,3,4]) )
+df = pd.DataFrame(dict([ (k,pd.Series(v)) for k,v in d.iteritems() ]))
+print(d)
+print(df)
+```
+
+```{python}   
+
+
+```
+
+```{python}   
+
+
+```
+
+```{python}   
+
+
+```
+

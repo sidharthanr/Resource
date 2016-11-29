@@ -1,7 +1,9 @@
 ---
 title: "R and Py Starter Template"
 author: "Raghu Sidharthan"
-output:  html_document
+output: 
+  html_document:
+    highlight: pygments
 ---
 **R Starter Template**
 ```{r,eval=FALSE}
