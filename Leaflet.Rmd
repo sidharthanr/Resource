@@ -20,7 +20,8 @@ library(rgeos)
 library(jsonlite)
 ```
 
-```{r,results='hide',echo=TRUE,eval=TRUE}
+```{r,results='hide',echo=-1,eval=TRUE}
+#setwd('C:\\Users\\sidharthanr\\Dropbox\\Resource\\Git\\Resource')
 indShp <- readOGR("..\\..\\R\\GIS\\Shape\\India", "IND_adm2") 
 shpDT <- indShp[indShp@data$NAME_1=='Kerala',]
 shpDT@data <- data.table(shpDT@data)
@@ -55,6 +56,10 @@ leaflet() %>%
 ```{r}
 # Reading the GeoJSON File using the jsonlite package
 GJFName <- '..\\..\\Data\\PKD_water_road.geojson'
+GJFName_LS<- '..\\..\\Data\\PKD_water_road_LS.geojson'
+GJFName_PG<- '..\\..\\Data\\PKD_water_road_PG.geojson'
+
+
 pkdGJ <- readLines(GJFName, warn = FALSE) %>% paste(collapse = "\n") %>% fromJSON(simplifyVector = FALSE)
 pkdGJDT <- data.table(fromJSON(GJFName)$features$properties)
 pkdGJDT$geomType <- unlist(lapply(pkdGJ$features, function(feat) feat$geometry$type))
@@ -82,6 +87,17 @@ subsetGeoJSON <- function(fullGeoJSON, selectorTemplate) {
 }
 pkdGJ_water    <- subsetGeoJSON(pkdGJ,selectorWater)
 
+pkdGJ_transpo    <- readOGR(GJFName_LS, "OGRGeoJSON")
+pkdGJ_transpo <- pkdGJ_transpo[pkdGJ_transpo@data$Highway!='not_hway',]
+pkdGJ_transpo@data <- data.table(pkdGJ_transpo@data)[,.(Name,Highway)]
+pkdGJ_transpo@data[is.null(Name),Name:='Unknown']
+
+  pkdTranCen = data.table(data.frame(gCentroid(pkdGJ_transpo,byid=TRUE)))
+  pkdTranCen[,Name:=pkdGJ_transpo$Name]
+  pkdTranCen[,Highway:=pkdGJ_transpo$Highway]
+  pkdTranCen <- pkdTranCen[Name!='null',]
+  pkdTranCen <- pkdTranCen[!duplicated(Name) & Highway %in% c('trunk'),]
+  
 leaflet() %>%  addTiles() %>%  
   addProviderTiles('Esri.WorldStreetMap',group='EsriStreet') %>%
   addProviderTiles('CartoDB.Positron',group='CartoDB-1') %>%  
@@ -90,10 +106,18 @@ leaflet() %>%  addTiles() %>%
                labelOptions = labelOptions(noHide = T)) %>% 
   addGeoJSON(pkdGJ_water, group = 'Water') %>%
   addMarkers(lng=76.639003, lat=10.800471, popup="Palakkad Jn.",group='Landmarks') %>% 
+  addPolylines(data=pkdGJ_transpo,group='transpo', weight = 2, color='#c51b8a') %>% 
+    addCircleMarkers(lng = pkdTranCen$x, lat = pkdTranCen$y,
+                     label = as.character((pkdTranCen$Name)),group='transpo',opacity=0,radius = 1,
+                     labelOptions = lapply(1:nrow(pkdTranCen), function(x) {
+                       labelOptions(opacity=1, noHide = T,textOnly = TRUE,textsize='10px',
+                                    direction = 'auto', offset=c(20,-15)) 
+                     })) %>% 
+
   setView(lng=76.64, lat=10.8,zoom = 10) %>% 
   addLayersControl(
     baseGroups = c('CartoDB-1','EsriStreet'),
-    overlayGroups = c('Cenral Kerala','Water','Landmarks'),
+    overlayGroups = c('Cenral Kerala','Water','Landmarks','transpo'),
     options = layersControlOptions(collapsed = T) )
 ```
 

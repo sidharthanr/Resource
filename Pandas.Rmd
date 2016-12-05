@@ -15,6 +15,8 @@ inpMatPD.info() # gives the memory usage of a object
 s = pd.Series([1,3,5,np.nan,6,8]) # Creating a Series
 Series.tolist() #Converting Series to list
 
+pandas.__version__ # this will print the version of pandas beign used
+
 #Creating a DataFrame
 dates = pd.date_range('20130101',periods=6)
 df = pd.DataFrame(np.random.randn(6,4),index=dates,columns=list('ABCD'))
@@ -24,6 +26,12 @@ df = pd.DataFrame(np.random.randn(6,4),index=dates,columns=list('ABCD'))
 df.columns = ['a', 'b'] # 2.	Assign column names
 
 df.rename(columns={'$a': 'a', '$b': 'b'}, inplace=True) #Rename columns 
+
+df = df.drop(['id','var'],axis=1) #axis 1 for columns
+
+prt1Pivot = prt1.pivot('TAZ','LINENO','EST').reset_index() # Reset index to make index a column
+
+dtPivot=dtPivot.fillna(0) # Fill all missing variable with some number
 
 #Sorting by an axis 
 df.sort_index(axis=1, ascending=False)
@@ -42,6 +50,29 @@ df.drop_duplicates(['HOUSEID']) # Drop duplicates
 df[df.duplicated(['HOUSEID'])] # Identify duplicates
 
 
+pd.crosstab(df['oDist'],df['oDist']) ) # crosstab
+pd.pivot_table(df,index=['oDist'],columns=['oDist'],values='id',aggfunc=len,fill_value=0) # crosstab using pivot_table but it can do more
+df.pivot('foo', 'bar', 'baz') # not sure what this does
+
+pd.merge(df1,df2,how='outer',left_on=['id1','id2'],right_on=['v1','v2']) # For suffixes use ",suffixes=('_prt1', '_prt2')"
+
+racData=racData.add_prefix('r_') # Add suffix to all column names
+
+prt3Pivot._get_numeric_data().apply(sum,0) # select only numeric coluns in a dataframe
+
+#Read_csv options - reading a data withcoded null values
+persons  = pd.read_csv('data.csv',na_values=['NULL','N.A.'], keep_default_na=False) 
+
+#pd.Categorical can be used for ordered variables - good for custom sorting. Similar to the R ordered levels, Fits nicely with pivot_table
+tr['TRPER'] = pd.Categorical(tr['TRPER'],['EA','AM','MD','PM','EV'])
+
+#Categorical variables can be compared to get boolean operators. Aggregating and then reseting index will destroy the categories.To convert categories into cat code use this
+sub_tours_summ['TOPER'].cat.codes
+
+#Drop all columns starting with 
+dropCols = [val for is_good, val in zip([('rac_' in a or 'wac' in a) for a in df.columns.tolist()], df.columns.tolist()) if is_good]
+
+ctppdata['hTrct']   = ctppdata.GEOID.apply(lambda x: np.int64(x[7:18])) # Pandas string manipulation
 
 ```
 **Filtering a DataFrame**
@@ -69,12 +100,11 @@ print(d)
 print(df)
 ```
 
+
+
 ```{python}   
 
 
-```
-
-```{python}   
 
 
 ```

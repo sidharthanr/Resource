@@ -91,6 +91,13 @@ print(datetime.now()) # Current time
 print(datetime.now(pytz.timezone('UTC')).astimezone(pytz.timezone('US/Eastern')))
 ```
 
+**Itertools Pacakge**
+```{python}   
+import itertools
+print list(itertools.permutations([1,2,3], 2))
+print list(itertools.combinations([1,2,3], 2))
+```
+
 ```{python}   
 
 

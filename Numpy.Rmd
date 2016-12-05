@@ -1,0 +1,155 @@
+---
+title: "Python NumPy"
+author: "Raghu Sidharthan"
+output: 
+  html_document:
+    highlight: pygments
+---
+
+
+```{python}   
+import numpy as np
+a = np.array([0.0, 1, 2, 3, 4]) # 1-d Array
+np.shape(a) # returns the dimensions
+np.zeros((10,3)) #for generating array of zeros
+np.ones((10,3)) #for generating an array of ones
+
+np.ravel(a) # creates a 1-D array from a 2-D array - does not copy
+a.flatten() # same as ravel but copies
+
+a.astype(int) #converts a array to ineger arrary
+
+a.squeeze() #function removes singleton dimensions from the array
+
+#Random numbers
+np.random.seed(123) # Setting the seed
+np.random.normal(0,1,(2,3)) # Generate Normal random number matrix
+
+print(np.arange(5))
+print(np.arange(4, 10, 1.25))
+print(np.reshape(np.arange(6),(2,3)))
+
+print('\nConvert NumPy Array to string')
+print(str(np.arange(1,3)).strip('[]')) 
+
+print('\nConvert NumPy Array to List')
+print(np.arange(10).tolist())
+
+
+```
+
+```{python}   
+import numpy as np
+#Deleting rows or columns in an array
+y=np.reshape(np.arange(24),(6,4))
+print(np.size(y),np.ndim(y))
+print(y)
+print(np.delete(y,(2,3),0))
+print(np.delete(y,(2,3),1))
+```
+
+```{python}
+import numpy as np
+#Shuffle (changes the variable) and Permutation (Creates a copy) function
+x= np.array([ 4.  ,  5.25,  6.5 ,  7.75,  9.  ])
+print(np.random.permutation(x))
+print(np.random.shuffle(x))
+
+
+```
+
+```{python}  
+import numpy as np
+temp = [2,3]; 
+print(np.tile(temp,[2,3]) )
+```
+
+```{python}
+import numpy as np
+arow=np.arange(0,4)
+brow=np.arange(3,7)
+print(arow)
+print(brow)
+print(np.vstack((arow,brow)))
+print(np.hstack((arow,brow)))
+
+```
+
+```{python}   
+#Upper and Lower triangular matrix operations with diagonal
+import numpy as np
+a = np.arange(16).reshape(4, 4) 
+print(a)
+print(a[np.triu_indices(len(a[:,0]),1)])
+
+
+```
+
+```{python}   
+import numpy as np
+#Selecting specific column in each row from a matrix using an array
+matA = np.reshape(np.arange(20),(4,5))
+selMat = tuple(np.array([[0,1,2,3],[0,2,1,4]]))
+print(matA)
+print(selMat)
+print(matA[selMat])
+
+
+```
+
+```{python,echo=c(-1,-2,-5,-8)}   
+import numpy as np
+aa = np.eye(4)
+print(aa)
+bb=np.hsplit(aa,[3])
+print('vsplit') 
+print(bb[0])
+print(bb[1])
+print('similarly for hsplit')
+```
+
+```{python,echo=c(-1:-4),comment=NA}   
+import numpy as np
+print('Multiplying a 1 dimensional array with two-dimensional array - in an element wise fashion - the length of the 1D array needs to be equal to the number of columns in the 2D array. See the image below for example. Note that this behavior is opposite of that in R.')
+a = np.arange(3)
+b = np.reshape(np.arange(12)+1,(4,3))
+print(a)
+print(b)
+print(a*b)
+print([a.shape,b.shape,(a*b).shape])
+
+
+```
+
+```{python,echo=c(-1,-2,-3,-7,-8,-9,-10),comment=NA}  
+import numpy as np
+aa = np.array([[0,1],[0,5]])
+print('np.sum function')
+print(aa)
+print(np.sum(aa,axis=0))
+print(np.sum(aa,axis=1))
+print('np.where function')
+aa = [[True,False],[True,True]]
+bb = np.array([[1,2],[3,4]])
+cc = np.array([[9,8],[7,6]])
+print(aa)
+print(bb)
+print(cc)
+print(np.where(aa,bb,cc))
+
+```
+
+```{python}   
+
+
+```
+
+```{python}   
+
+
+```
+
+```{python}   
+
+
+```
