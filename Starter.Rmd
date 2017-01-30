@@ -8,6 +8,7 @@ output:
 **R Starter Template**
 ```{r,eval=FALSE}
 # Raghu Sidharthan - 2017/mm/dd
+library(tidyverse)
 library(data.table)
 library(bit64)
 

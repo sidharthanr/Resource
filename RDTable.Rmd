@@ -7,19 +7,63 @@ output: html_document
 
 This is a compilation of data.table behavior.
 
+[RBasic1](RBasic1)
+[RBasic2](RBasic2),
+[RBasic3](RBasic3)
+
+
+[RGIS](RGIS),
+[Leaflet](Leaflet)
+
+
 **1. Basic syntax**
 
-```{r,results='hold',results='hide'}
+```{r,results='hold',results='hide',eval=FALSE}
 library(data.table)
 DT = data.table(x=c("b","b","b","a","a"),v=rnorm(5)) # same as data.frame
 tables() # prints all data tables
 identical( DT[list("x","v"),],DT[.("x","v"),]) # aslias for list
+str(dtnew) #to get the class type of each column and some samples
+estsetM2.4 <- data.table(estsetM2.4,key="sampn,perno") #Initialization
+
+#Setting the key of the data table
+setkey(PSN_DT, SAMPN)
+setkeyv(maz2010,c("TAZ","mgra"))
+
+#Select coumns from the table based on column names
+vlst1 <- paste("dur",1:253,sep="");
+temp1 <- estsetM4.2.3a[,vlst1, with=FALSE]
+temp1 <- DT[,region] to get the column region as a vector
+temp1 <- DT[,.(region)] to get the column region as a data table
+temp1 <- DT[,.(region,zone)] to get both the column as a vector a data.table
+temp1 <- DT[,list(region,zone)] to get both the column as a vector a data.table
+
+# Change column names
+setnames(DT,"V1", "Y")
+
+DT3 <- copy(DT)   # rather than DT3 <- DT – to make a copy rather than reference
+
+#Try .SD of data table. It stand for subset of Datatable.
+DT = data.table(x=rep(c("a","b","c"),each=2), y=c(1,3), v=1:6)
+setkey(DT, y)
+DT[, .SD[,paste(x,v, sep="", collapse="_")], by=y]
+DT[,print(.SD),by=y]
+
+#Add aggregated variables to the raw data file
+set.seed(1234)
+smalldat <- data.table(group1 = rep(1:2, each = 5), 
+group2 = rep(c('a','b'), times = 5), 
+x = rnorm(10))
+smalldat[, aggGroup1 := mean(x), by = group1]
+smalldat[, aggGroup1.2 := mean(x), by = list(group1, group2)]
+
+
+
 
 ```
 
-**2. Basic syntax (contd.)**
 
-```{r}
+```{r,eval=FALSE}
 DT[2,] # select row 2
 DT[x=="b",] # select rows where column x == "b"
 cat(try(DT["b",],silent=TRUE)) # to show that it doesn't work unless keyed
@@ -30,8 +74,9 @@ DT["b",mult="last"]
 DT["b"] # comma is optional
 ```
 
+**2. Efficiency comparison**
 
-```{r, echo=T}
+```{r, echo=T,eval=FALSE}
 #demonstrate the difference between a vector scan and a binary search - from datatable-intro.pdf
 grpsize = ceiling(1e7/26^2) # 10 million rows, 676 groups
  tt=system.time( DF <- data.frame(
@@ -48,6 +93,7 @@ uu=system.time(ans3 <- DT[x=="R" & y=="h",]) # vector scan using DT
 tt;ss;uu;
 ```
 
+**3. Fill NA in a data.table**
 ```{r, echo=T,eval=F}
 #Method for replacing na with something – Matt Dowle
 tripData <- fread('tripData.csv',nrows = 10,colClasses = c(rep("integer", 5), rep("NULL", 35)))
@@ -67,4 +113,76 @@ f_dowle3 = function(DT) {
     # or by number (slightly faster than by name) :
     for (j in seq_len(ncol(DT)))
         set(DT,which(is.na(DT[[j]])),j,0)
+```
+
+**4. Misc**
+```{r, echo=T,eval=F}
+
+#Nice application
+library(data.table)
+X <- rep("a s", 1e6)
+d <- data.frame(1:1e6, replicate(20, X, simplify=FALSE), stringsAsFactors=FALSE)
+colnames(d) <- paste("X", seq_len(ncol(d)), sep="")
+DT1 <- as.data.table(d)
+DT2 <- copy(DT1)
+DT3 <- copy(DT2)
+
+system.time({
+  cnames <- colnames(DT1)[-1]
+  for(cname in cnames) {
+      DT1[ ,
+          cname := gsub(" ", "_", DT1[[cname]][[1]]),
+          with=FALSE]
+  }
+})
+
+#Apply same function to all the columns (except key)
+dtb[, lapply(.SD, mean), by=condition]
+Apply same function to multiple columns 
+dtb[, lapply(.SD, mean), by=condition, .SDcols=2:4]
+Alternative below
+ids <- paste0("V", 251:300) # get column ids
+dt.out <- dt[, lapply(.SD, mean), by=grp, .SDcols = ids] 
+
+
+# .Internal(inspect(DT)) can be used to identify copy by reference and all
+
+
+# Remove/drop a column
+# Method 1 (and preferred as it takes 0.00s even on a 20GB data.table)
+df3[,foo:=NULL]
+
+# Method 2a -- A safe idiom for excluding columns matching a regular expression
+df3 <- df3[, which(!grepl("^foo$", colnames(df3))), with=FALSE]
+
+# Method 2b -- An alternative to 2a, also "safe" in the sense described below
+df3 <- df3[, grep("^foo$", colnames(df3), invert=TRUE), with=FALSE]
+data.table also supports the following syntax:
+## Method 3 (could then assign to df3, 
+df3[, !"foo", with=FALSE]  
+
+
+# Chained calling
+check <- cwalk_maz2taz[,lapply(.SD,is.na)][,lapply(.SD,sum)]
+
+
+summSED <- summSED[, which(!grepl("INC_WRK", colnames(summSED))), with=FALSE]
+Cast and Melt
+dcast.data.table
+melt
+Use duplicaterd and sort to remove rows – duplicated retains the first occuracnnce
+aa = data.table( a=c(2,4,1,1),b=c(5,1,5,3))
+aa[!duplicated(a),]
+Function to pass string to data table and use it as string and not as a scope variable
+vnam = "HINCCAT1"
+cpreVar <- function(vnam){
+stt <- merge(hh2[,lapply(.SD,length),by=c(vnam),.SDcols="ps2"],
+             hh3[,lapply(.SD,length),by=c(vnam),.SDcols="ps3"],by=c(vnam))
+stt[,ps2Fr:=ps2/sum(ps2)];stt[,ps3Fr:=ps3/sum(ps3)];stt
+}
+cpreVar("HINCCAT1")
+Multiple assign in j
+DT[,`:=`(new1=sum(colB), new2=sum(colC))] # multiple :=.  
+
+
 ```

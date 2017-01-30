@@ -8,6 +8,8 @@ output:  html_document
 
 [RBasic2](RBasic2),
 [RBasic3](RBasic3),
+[data.table](RDTable)
+
 [RGIS](RGIS),
 [Leaflet](Leaflet)
 
@@ -43,6 +45,7 @@ Sys.time() # to print current date/time
 suppressMessages(library(bit64)) # to suppress messages while loading a library
 #Use library() to see all packages installed, search() to see all packages loaded 
 str(df) # Compactly Display the Structure
+if(exists('inpShpFile')) # check whether an object named inpShpFile exists
 ```
 **2. Reading and Writing files**
 ```{r,results='hide',warning=FALSE,message=FALSE,echo=TRUE,eval=F}
@@ -115,11 +118,14 @@ allTempsSMRY <- dcast.data.table(allTempsMelt,eval(bquote(.(f1)~variable+scenNam
 
 ```
 
-**4. dplyr functions**
-```{r,results='hide',echo=TRUE,eval=F}
-ddply(temp,.(trippurpD,todCat),summarise, wm = weighted.mean(avgDist,nObs)) # Weighted mean using the plyr package function
-```
+***File Access Functions***
 
+```{r,echo=TRUE,eval=T}
+#setwd('C:\\Users\\sidharthanr\\Dropbox\\Resource\\Git\\Resource')
+print(file.info('test.csv'))
+print(list.files())
+
+```
 
 ******
 
