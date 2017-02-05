@@ -1,0 +1,65 @@
+---
+title: "Dplyr"
+author: "Raghu Sidharthan"
+output: html_document
+---
+
+[RBasic1](RBasic1),
+[RBasic2](RBasic2),
+[RBasic3](RBasic3),
+[data.table](RDTable)
+
+[RGIS](RGIS),
+[Leaflet](Leaflet)
+
+```{r,results='hide',echo=F,warning=FALSE}
+library(nycflights13)
+```
+
+**1. Basic dplyr functions**
+```{r,echo=TRUE,warning=FALSE,message=FALSE, results='hide'}
+library(dplyr)
+
+filter(flights, month == 1, day == 1) # filter by month and day
+filter(flights, month == 1 | month == 2) # using and in filter
+slice(flights, 1:10) # To select rows by position
+
+arrange(flights, year, month, day) # Arrange rows in a order provided by the columns
+arrange(flights, desc(arr_delay)) # Use desc() to order a column in descending order:
+
+select(flights, year, month, day) # Select columns by name
+select(flights, year:day) # Select all columns between year and day (inclusive)
+select(flights, -(year:day)) # Select all columns except those from year to day (inclusive)
+select(flights, tail_num = tailnum) # You can rename variables with select() by using named arguments:
+
+rename(flights, tail_num = tailnum) #select() drops vars not mentioned, Instead, use rename()
+
+distinct(flights, tailnum) # Use distinct()to find unique values in a table:
+
+# Add new columns with mutate()
+mutate(flights,
+  gain = arr_delay - dep_delay,
+  speed = distance / air_time * 60)
+# mutate allows you to refer to columns that you have just created:
+# If you only want to keep the new variables, use transmute():
+
+#Summarise values with summarise()
+summarise(flights,
+  delay = mean(dep_delay, na.rm = TRUE))
+
+#Randomly sample rows with sample_n() and sample_frac()
+sample_n(flights, 10) # for a fixed number
+sample_frac(flights, 0.01) # for a fixed fraction
+
+
+```
+
+**2. Grouping functions**
+```{r,results='hide',echo=TRUE,eval=FALSE}
+
+```
+**3. Misc**
+```{r,results='hide',echo=TRUE,eval=FALSE}
+ddply(temp,.(trippurpD,todCat),summarise, wm = weighted.mean(avgDist,nObs)) # Weighted mean using the plyr package function
+```
+

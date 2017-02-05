@@ -185,4 +185,12 @@ Multiple assign in j
 DT[,`:=`(new1=sum(colB), new2=sum(colC))] # multiple :=.  
 
 
+# A Fill NA function for easy use with DT
+fillna = function(DT) {
+  DT_ret <- copy(DT)
+  for (j in seq_len(ncol(DT_ret)))
+  set(DT_ret,which(is.na(DT_ret[[j]])),j,0)
+  return(DT_ret)
+}
 ```
+
