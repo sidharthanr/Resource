@@ -122,8 +122,7 @@ $(document).ready(function () {
 </div>
 
 
-<p><a href="RBasic1" class="uri">RBasic1</a>, <a href="RBasic2" class="uri">RBasic2</a>, <a href="RBasic3" class="uri">RBasic3</a>, <a href="RDTable">data.table</a></p>
-<p><a href="RGIS" class="uri">RGIS</a>, <a href="Leaflet" class="uri">Leaflet</a></p>
+<p><a href="RBasic1" class="uri">RBasic1</a>, <a href="RBasic2" class="uri">RBasic2</a>, <a href="RBasic3" class="uri">RBasic3</a>, <a href="RDTable">data.table</a>, <a href="dplyr" class="uri">dplyr</a>, <a href="tidyr" class="uri">tidyr</a>, <a href="RGIS" class="uri">RGIS</a>, <a href="Leaflet" class="uri">Leaflet</a></p>
 <p><strong>1. Basic dplyr functions</strong></p>
 <pre class="r"><code>library(dplyr)
 
@@ -139,7 +138,7 @@ select(flights, year:day) # Select all columns between year and day (inclusive)
 select(flights, -(year:day)) # Select all columns except those from year to day (inclusive)
 select(flights, tail_num = tailnum) # You can rename variables with select() by using named arguments:
 
-rename(flights, tail_num = tailnum) #select() drops vars not mentioned, Instead, use rename()
+rename(flights, tail_num = tailnum) #select() drops vars not mentioned, Instead, use rename(), tailnum is the orig name
 
 distinct(flights, tailnum) # Use distinct()to find unique values in a table:
 
@@ -157,9 +156,20 @@ summarise(flights,
 #Randomly sample rows with sample_n() and sample_frac()
 sample_n(flights, 10) # for a fixed number
 sample_frac(flights, 0.01) # for a fixed fraction</code></pre>
-<p><strong>2. Grouping functions</strong></p>
+<p><strong>2. Grouping functions and merge</strong></p>
+<pre class="r"><code>Trip &lt;- Trip %&gt;% arrange(SAMPN,arrtime2) %&gt;% 
+  group_by(SAMPN) %&gt;% mutate(tripnum=1:n()) # Creates indexing by groups
+
+#Merging data
+S2SData &lt;- S2SData %&gt;%    
+  left_join(StationNames,by = c('FromNode'='Node'))</code></pre>
 <p><strong>3. Misc</strong></p>
-<pre class="r"><code>ddply(temp,.(trippurpD,todCat),summarise, wm = weighted.mean(avgDist,nObs)) # Weighted mean using the plyr package function</code></pre>
+<pre class="r"><code># Example of reading files in a loop  and renaming variable inside a loop using a string using rename_
+for(iloop in 1:5){
+  hh_temp_summ &lt;- hh_temp %&gt;% group_by(maz) %&gt;% summarise(num_hh=n()) %&gt;% # read hh_temp based in iloop
+    rename_(.dots=setNames('num_hh', paste0('num_hh',iloop)))
+  assign(paste0('hhSumm',iloop),hh_temp_summ) # Assign to a summary dataset
+}</code></pre>
 
 
 

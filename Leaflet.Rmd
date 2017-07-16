@@ -4,10 +4,14 @@ author: "Raghu Sidharthan"
 output:  html_document
 ---
 
-[RBasic1](RBasic1), 
+[RBasic1](RBasic1),
 [RBasic2](RBasic2),
 [RBasic3](RBasic3),
-[RGIS](RGIS)
+[data.table](RDTable),
+[dplyr](dplyr),
+[tidyr](tidyr),
+[RGIS](RGIS),
+[Leaflet](Leaflet)
 
 **Libraries to load**
 
@@ -21,16 +25,16 @@ library(jsonlite)
 ```
 
 ```{r,results='hide',echo=-1,eval=TRUE}
-#setwd('C:\\Users\\sidharthanr\\Dropbox\\Resource\\Git\\Resource')
+setwd('C:\\Users\\sidharthanr\\Dropbox\\Resource\\Git\\Resource')
 indShp <- readOGR("..\\..\\R\\GIS\\Shape\\India", "IND_adm2") 
 shpDT <- indShp[indShp@data$NAME_1=='Kerala',]
 shpDT@data <- data.table(shpDT@data)
 shpDT@data <- shpDT@data[,.(NAME_2,VARNAME_2)]
 shpDT@data[,txtLbl := paste(NAME_2,'-',VARNAME_2)]
-shpDT_sml <- gSimplify(shpDT,tol = 0.001)
+#shpDT <- gSimplify(shpDT,tol = 0.001)
 row.names(shpDT@data) <- row.names(shpDT)
-shpDT_sml <- SpatialPolygonsDataFrame(shpDT_sml,shpDT@data)
-shpDT_pkd <- shpDT_sml[shpDT_sml@data$NAME_2 %in% c('Palakkad','Malappuram','Thrissur','Ernakulam'),]
+shpDT <- SpatialPolygonsDataFrame(shpDT,shpDT@data)
+shpDT_pkd <- shpDT[shpDT@data$NAME_2 %in% c('Palakkad','Malappuram','Thrissur','Ernakulam'),]
 sort( sapply(ls(),function(x){object.size(get(x))})) 
 
 ```
@@ -42,7 +46,7 @@ leaflet() %>%
   addProviderTiles('Esri.WorldStreetMap',group='EsriStreet') %>%
   addProviderTiles('Esri.WorldImagery',group='EsriImagery') %>%
   addProviderTiles('CartoDB.Positron',group='CartoDB-1') %>%  
-  addPolygons(data=shpDT_sml,group='Kerala',stroke=T,weight = 2,fillOpacity = 0,
+  addPolygons(data=shpDT,group='Kerala',stroke=T,weight = 2,fillOpacity = 0,
                label=lapply(shpDT@data$txtLbl, function(x) HTML(x)),
                labelOptions = labelOptions(noHide = T)) %>% 
   addLayersControl(
@@ -121,3 +125,8 @@ leaflet() %>%  addTiles() %>%
     options = layersControlOptions(collapsed = T) )
 ```
 
+**3. Save to HTML**
+```{r,eval=F}
+library(htmlwidgets)
+saveWidget(mm, file = 'SERPM_MAZ_n_TAZ.html', selfcontained = F)
+```

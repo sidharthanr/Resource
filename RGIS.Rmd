@@ -80,6 +80,16 @@ cropByCen <- function(inSh,x1,x2,y1,y2){
 }
 netCase1_crop <- cropByCen(netCase1,860000,890000,580000,600000)
 
+# Do Spatial Union and create a higher level polygons of the type SpatialPolygonsDataFrame
+doPolyUnion <- function(inpPoly,unionVec){
+  retPoly <- unionSpatialPolygons(inpPoly, unionVec)
+  dummyData = data.table(row.names(retPoly))
+  row.names(dummyData) <- row.names(retPoly)
+  retPoly = SpatialPolygonsDataFrame(retPoly,dummyData)
+  retPoly@data$V1 <- (retPoly@data$V1)
+  return(retPoly)
+}
+
 ```
 
 **3. Miscellaneous Items**
@@ -98,10 +108,7 @@ check3 <- over(SCAGTAZt2_tr,HSR_TAZs,returnList = TRUE)
 #Dissolve all boundaries  - use gUnaryUnion function
 plot((tracts10))
 plot(gUnaryUnion(tracts10))
-#The result is a SpatialPolygon. To create a SpatiaPolygonDataFrame do the following
-serpmCounty <- unionSpatialPolygons(tl_2012_12_tract, tl_2012_12_tract$COUNTYFP) dummyData = data.table(row.names(serpmCounty))
-row.names(dummyData) <- row.names(serpmCounty)
-serpmCounty = SpatialPolygonsDataFrame(serpmCounty,dummyData)
+#The result is a SpatialPolygon. 
 
 #Function to get the TAZ location of a dataframe of points
 taz <- readOGR("C:\\Project\\", "taz")

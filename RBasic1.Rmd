@@ -6,10 +6,12 @@ output:  html_document
 
 **This is a compilation of basic R utilities.**
 
+[RBasic1](RBasic1),
 [RBasic2](RBasic2),
 [RBasic3](RBasic3),
-[data.table](RDTable)
-
+[data.table](RDTable),
+[dplyr](dplyr),
+[tidyr](tidyr),
 [RGIS](RGIS),
 [Leaflet](Leaflet)
 
@@ -127,7 +129,15 @@ print(list.files())
 
 ```
 
-******
+***Parallel Threading***
+```{r,echo=TRUE,eval=F}
+library(parallel)
+cl <- makeCluster(detectCores() - 1)
+clusterEvalQ(cl, library("rgdal")) 
+clusterExport(cl, c("tranFileList2"))
+system.time(inpData <- parLapply(cl,1:length(tranFileList2),function(ii) read.fwf(tranFileList2[ii],widths = c(20,5,5,7,7,5,7,7,2,2,7,7,7,7,7)) ) )
+stopCluster(cl) # To stop cluster and free resources
+```
 
 
 

@@ -7,11 +7,12 @@ output: html_document
 
 This is a compilation of data.table behavior.
 
-[RBasic1](RBasic1)
+[RBasic1](RBasic1),
 [RBasic2](RBasic2),
-[RBasic3](RBasic3)
-
-
+[RBasic3](RBasic3),
+[data.table](RDTable),
+[dplyr](dplyr),
+[tidyr](tidyr),
 [RGIS](RGIS),
 [Leaflet](Leaflet)
 

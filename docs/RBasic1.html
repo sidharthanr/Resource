@@ -123,8 +123,7 @@ $(document).ready(function () {
 
 
 <p><strong>This is a compilation of basic R utilities.</strong></p>
-<p><a href="RBasic2" class="uri">RBasic2</a>, <a href="RBasic3" class="uri">RBasic3</a>, <a href="RDTable">data.table</a></p>
-<p><a href="RGIS" class="uri">RGIS</a>, <a href="Leaflet" class="uri">Leaflet</a></p>
+<p><a href="RBasic1" class="uri">RBasic1</a>, <a href="RBasic2" class="uri">RBasic2</a>, <a href="RBasic3" class="uri">RBasic3</a>, <a href="RDTable">data.table</a>, <a href="dplyr" class="uri">dplyr</a>, <a href="tidyr" class="uri">tidyr</a>, <a href="RGIS" class="uri">RGIS</a>, <a href="Leaflet" class="uri">Leaflet</a></p>
 <p><strong>1. System functions</strong></p>
 <pre class="r"><code>#RStudio Clear Screen = Ctrl+L
 sessionInfo()           #gives info about versions of loaded packages
@@ -185,7 +184,7 @@ aq2 &lt;- aq[aq$Month==5,] # dropping observation
 aq2 &lt;- subset(aq,Month==5) # dropping observation
 paste(&quot;str&quot;,num,sep=&quot;&quot;) # concat string and numeric - see also paste0 (default sep=&quot;&quot;)
 paste(&quot;create table t&quot;,i,sep=&quot;&quot;)
-paste0(&quot;no&quot;, &quot;gap&quot;)– pastes with default sep=””
+paste0(&quot;no&quot;, &quot;gap&quot;)â pastes with default sep=ââ
 
 assign(paste0(&quot;ds&quot;,10),read.csv(paste(&quot;dset&quot;,10,&quot;.csv&quot;,sep=&quot;&quot;))) #dynamic LHS dset name
 get(&quot;sht57&quot;) # opposite of assign/returns the object with that name
@@ -217,16 +216,22 @@ allTempsSMRY &lt;- dcast.data.table(allTempsMelt,eval(bquote(.(f1)~variable+scen
 <pre class="r"><code>#setwd('C:\\Users\\sidharthanr\\Dropbox\\Resource\\Git\\Resource')
 print(file.info('test.csv'))</code></pre>
 <pre><code>##          size isdir mode               mtime               ctime
-## test.csv  441 FALSE  666 2015-08-19 06:52:11 2016-09-30 18:14:15
+## test.csv  441 FALSE  666 2015-08-19 07:52:11 2016-09-30 19:14:17
 ##                        atime exe
-## test.csv 2016-09-30 18:14:15  no</code></pre>
+## test.csv 2016-09-30 19:14:17  no</code></pre>
 <pre class="r"><code>print(list.files())</code></pre>
-<pre><code>##  [1] &quot;docs&quot;         &quot;Dplyr.Rmd&quot;    &quot;Leaflet.Rmd&quot;  &quot;Numpy.Rmd&quot;   
-##  [5] &quot;out.csv&quot;      &quot;Pandas.Rmd&quot;   &quot;PyBasic1.Rmd&quot; &quot;RBasic1.html&quot;
-##  [9] &quot;RBasic1.Rmd&quot;  &quot;RBasic2.Rmd&quot;  &quot;RBasic3.Rmd&quot;  &quot;RDTable.Rmd&quot; 
-## [13] &quot;README.md&quot;    &quot;RGIS.Rmd&quot;     &quot;RMisc.Rmd&quot;    &quot;Starter.Rmd&quot; 
-## [17] &quot;test.csv&quot;</code></pre>
-<hr />
+<pre><code>##  [1] &quot;docs&quot;         &quot;dplyr.Rmd&quot;    &quot;Leaflet.Rmd&quot;  &quot;Numpy.Rmd&quot;   
+##  [5] &quot;out.csv&quot;      &quot;Pandas.Rmd&quot;   &quot;PyBasic1.Rmd&quot; &quot;RBasic1.Rmd&quot; 
+##  [9] &quot;RBasic2.Rmd&quot;  &quot;RBasic3.Rmd&quot;  &quot;RDTable.Rmd&quot;  &quot;README.md&quot;   
+## [13] &quot;RGIS.Rmd&quot;     &quot;RMisc.Rmd&quot;    &quot;Starter.Rmd&quot;  &quot;test.csv&quot;    
+## [17] &quot;tidyr.Rmd&quot;</code></pre>
+<p><strong><em>Parallel Threading</em></strong></p>
+<pre class="r"><code>library(parallel)
+cl &lt;- makeCluster(detectCores() - 1)
+clusterEvalQ(cl, library(&quot;rgdal&quot;)) 
+clusterExport(cl, c(&quot;tranFileList2&quot;))
+system.time(inpData &lt;- parLapply(cl,1:length(tranFileList2),function(ii) read.fwf(tranFileList2[ii],widths = c(20,5,5,7,7,5,7,7,2,2,7,7,7,7,7)) ) )
+stopCluster(cl) # To stop cluster and free resources</code></pre>
 
 
 

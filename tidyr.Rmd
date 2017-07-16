@@ -1,0 +1,46 @@
+---
+title: "tidyr"
+author: "Raghu Sidharthan"
+output: html_document
+---
+
+[RBasic1](RBasic1),
+[RBasic2](RBasic2),
+[RBasic3](RBasic3),
+[data.table](RDTable),
+[dplyr](dplyr),
+[tidyr](tidyr),
+[RGIS](RGIS),
+[Leaflet](Leaflet)
+
+```{r,echo=T,warning=FALSE}
+library(tidyr)
+df <- data.frame(
+  id = 1:10,
+  time = as.Date('2009-01-01') + 0:9,
+  Q3.2.1. = rnorm(10, 0, 1),
+  Q3.2.2. = rnorm(10, 0, 1),
+  Q3.2.3. = rnorm(10, 0, 1),
+  Q3.3.1. = rnorm(10, 0, 1),
+  Q3.3.2. = rnorm(10, 0, 1),
+  Q3.3.3. = rnorm(10, 0, 1)
+)
+
+
+df %>%
+  gather(key, value, -id, -time) %>%
+  extract(key, c("question", "loop_number"), "(Q.\\..)\\.(.)") %>%
+  spread(question, value)
+
+stocks <- data.frame(
+  time = as.Date('2009-01-01') + 0:9,
+  X = rnorm(10, 0, 1),
+  Y = rnorm(10, 0, 2),
+  Z = rnorm(10, 0, 4)
+)
+
+stocks %>% gather(stock, price, -time)
+stocksm <- stocks %>% gather(stock, price, -time)
+stocksm %>% spread(stock, price)
+stocksm %>% spread(time, price)
+```
