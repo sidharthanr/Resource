@@ -139,5 +139,7 @@ system.time(inpData <- parLapply(cl,1:length(tranFileList2),function(ii) read.fw
 stopCluster(cl) # To stop cluster and free resources
 ```
 
-
-
+***Creating a PDF from a vector***
+```{r,echo=TRUE,eval=TRUE}
+plot(density(runif(50)))
+```

@@ -74,6 +74,8 @@ dropCols = [val for is_good, val in zip([('rac_' in a or 'wac' in a) for a in df
 
 ctppdata['hTrct']   = ctppdata.GEOID.apply(lambda x: np.int64(x[7:18])) # Pandas string manipulation
 
+estData['totNMTrip']=np.minimum(estData['totNMTrip'],50) # Capping a dataframe column at a certain value
+
 ```
 **Filtering a DataFrame**
 ```{python,echo=-1:-5,comment=NA}   

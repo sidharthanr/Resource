@@ -27,6 +27,7 @@ os.listdir('C:\\Users\\sidharthanr\\Temp') # lists all files
 import sys
 sys.exit("Error message")  #To stop the program execution progrmatically
 sys.path.append('C:\\Temp') #after this modules in this directory can be imported
+print("\n".join(sys.path)) # prints all the folders in the system path
 #Get Time  for time consumed computations
 import time
 ts = time.time()
@@ -68,6 +69,23 @@ fil = [True, False, True, False]
 print(list(compress(list_a, fil)))
 
 ```
+
+**Unpacking a list of lists**
+
+```{python}   
+LofL = [['x01', 'x02'], ['x03', 'x04'], ['x05', 'x06']] # This is a list of list
+
+flat_list = [item for sublist in LofL for item in sublist]
+print(flat_list)
+# This is equivalent to below
+flat_list=[]
+for sublist in LofL:
+    for item in sublist:
+        flat_list.append(item)
+		
+
+```
+
 **String Operations**
 ```{python}   
 s = "  \t a string example\t  "
