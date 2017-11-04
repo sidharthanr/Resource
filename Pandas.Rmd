@@ -27,6 +27,17 @@ df.columns = ['a', 'b'] # 2.	Assign column names
 
 df.rename(columns={'$a': 'a', '$b': 'b'}, inplace=True) #Rename columns 
 
+
+
+
+##Using DataFrame.drop
+df.drop(df.columns[[1, 2]], axis=1, inplace=True)
+# drop by Name
+df1 = df1.drop(['B', 'C'], axis=1)
+## Select the ones you want
+df1 = df[['a','d']]
+
+
 df = df.drop(['id','var'],axis=1) #axis 1 for columns
 
 prt1Pivot = prt1.pivot('TAZ','LINENO','EST').reset_index() # Reset index to make index a column
@@ -104,15 +115,21 @@ print(df)
 
 
 
-```{python}   
-
+```{python,eval=FALSE}   
+s.sample(n=3) # sample 3 random elements from the Series:
+df.sample(frac=0.1, replace=True) # random 10% of the DataFrame with replacement:
 
 
 
 ```
-
-```{python}   
-
-
+**Shift function and rolling function for time series kind of data**
+```{python,echo=-1:-2,}  
+import numpy as np
+import pandas as pd
+index = pd.date_range('2000-1-1', periods=10, freq='D')
+df = pd.DataFrame(data=[3,1,4,2,1,3,2,1,3,2], index=index, columns=['A'])
+df['B'] = df['A'].rolling(window=2,center=False).mean()
+df['C'] = df['A'].shift(1).rolling(window=2,center=False).mean()
+print(df)
 ```
 

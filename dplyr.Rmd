@@ -13,12 +13,8 @@ output: html_document
 [RGIS](RGIS),
 [Leaflet](Leaflet)
 
-```{r,results='hide',echo=F,warning=FALSE}
-library(nycflights13)
-```
-
 **1. Basic dplyr functions**
-```{r,echo=TRUE,warning=FALSE,message=FALSE, results='hide'}
+```{r,echo=TRUE,warning=FALSE,message=FALSE, results='hide',eval=F}
 library(dplyr)
 
 filter(flights, month == 1, day == 1) # filter by month and day
@@ -73,5 +69,10 @@ for(iloop in 1:5){
     rename_(.dots=setNames('num_hh', paste0('num_hh',iloop)))
   assign(paste0('hhSumm',iloop),hh_temp_summ) # Assign to a summary dataset
 }
+
+# Apply a function in mutate row wise - can be useful if the function does not accept vectors
+iris %>% 
+  rowwise() %>% 
+  mutate(Max.Len= max(Sepal.Length,Petal.Length))
 ```
 
